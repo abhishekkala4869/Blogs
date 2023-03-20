@@ -11,6 +11,8 @@ exports.createBlog = asyncHandler(async (req, res, next) => {
 });
 
 //get all Blogs ----EveryOne
+
+//this is basudev's contribution
 exports.getAllBlogs = asyncHandler(async (req, res) => {
   const resultPerPage = 5;
   const blogCount = await Blog.countDocuments();
