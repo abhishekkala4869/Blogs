@@ -4,6 +4,7 @@ const helmet = require("helmet");
 const logger = require("morgan");
 const cors = require("cors");
 const YAML = require("yamljs");
+const cookieParser = require("cookie-parser");
 const errorMiddleware = require("./middleware/error");
 const swaggerJsDocs = YAML.load("./api.yaml");
 const app = express();
@@ -11,6 +12,7 @@ const app = express();
 const userRoute = require("./routes/userRoute");
 const blogRoute = require("./routes/blogRoute");
 app.use(express.json());
+app.use(cookieParser());
 //swagger for documentation
 app.use("/api-docs", swagger.serve, swagger.setup(swaggerJsDocs));
 //helmet for protection of headers from hackers

@@ -1,9 +1,24 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
+  title: { type: String, required: [true, "Please enter title"] },
+  category: {
+    type: String,
+    enum: [
+      "music",
+      "Science & tech",
+      "lifeStyle",
+      "art",
+      "travel",
+      "entertainment",
+      "work life",
+      "others",
+    ],
+    default: "others",
+  },
   author: {
     type: String,
-    required: [true, "Pleas enter product name"],
+    required: [true, "Please enter Author Name"],
     trim: true,
   },
   description: {

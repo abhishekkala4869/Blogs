@@ -13,11 +13,12 @@ require("dotenv").config();
 
 //register a user
 exports.registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
   const user = await User.create({
     name,
     email,
     password,
+    role,
     avatar: {
       images: {
         public_id: "this is a sample id",

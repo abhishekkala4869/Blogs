@@ -20,7 +20,7 @@ exports.getAllBlogs = asyncHandler(async (req, res) => {
     .pagination(resultPerPage);
 
   const blogs = await apiFeature.query;
-  res.status(200).json({ success: true, blogs, Count });
+  res.status(200).json({ success: true, blogs, blogCount });
 });
 
 //Update Blog---Admin Route
@@ -66,8 +66,9 @@ exports.commentBlog = asyncHandler(async (req, res, next) => {
     name: req.user.name,
     comment,
   };
+  console.log(blog_id);
   const blog = await Blog.findById(blog_id);
-
+  console.log(blog);
   const isReviewed = blog.comments.find(
     (com) => com.user.toString() === req.user._id.toString() //here we have used array method find not mongoose method
   );
@@ -88,7 +89,7 @@ exports.commentBlog = asyncHandler(async (req, res, next) => {
 });
 //Get all Reviews of a blog
 exports.getBlogComments = asyncHandler(async (req, res, next) => {
-  const blog = await Blog.findById(req.query.productId);
+  const blog = await Blog.findById(req.query.blogId);
   if (!blog) return next(new ErrorHandler(404, "Blog not found"));
   res.status(200).json({ success: true, comments: blog.comments });
 });
@@ -97,14 +98,19 @@ exports.deleteComment = asyncHandler(async (req, res, next) => {
   const blog = await Blog.findById(req.query.blogId);
 
   if (!blog) return next(new ErrorHandler(404, "Blog not found"));
+  const comment = blog.comments.filter(
+    (com) => com.user.toString() == req.user._id.toString() //id hai comment ki id
+  );
+  if (!comment)
+    return next(new ErrorHandler(404, "no comment found with this user"));
   const comments = blog.comments.filter(
-    (com) => com._id.toString() !== req.query.id.toString() //id hai comment ki id
+    (com) => com.user.toString() !== req.user._id.toString() //id hai comment ki id
   );
   //here we are keeping all those review which we want to keep the other way is to delete only the selected review
 
   const numsOfComments = comments.length;
   await Blog.findByIdAndUpdate(
-    req.query.productId,
+    req.query.blogId,
     {
       comments,
       numsOfComments,
